@@ -1,21 +1,50 @@
-import { Grid, Paper, Avatar, Typography, List } from "@mui/material";
+import { useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
-import BRToolbar from "../dashboard/BRToolbar";
+import ProfileCommentForm from "./Comment";
+import { Grid, Paper, Avatar, Typography, Container } from "@mui/material";
 
-const Profile: React.FC = () => {
+import React from 'react'
+import BRToolbar from "../generic/BRToolbar";
+import DogImage from "../dashboard/DogImage";
+import Sidebar from "../generic/Sidebar";
 
+
+interface ProfileCommentFormProps {
+  onCommentSubmit: (newComment: Commentype) => void;
+}
+
+export type Commentype = {
+  id: string;
+  title: string;
+  timestamp: number;
+  body: string;
+};
+
+
+
+function Profile() {
+
+  
 const {currentUser} = useAuth();
+
 
 const defaultAvatarUrl = 'path_to_default_avatar_image.jpg';
 
+const addComment = (newComment: Commentype) => {
+  if(newComment.body && newComment.title){
+  setComments(prevComments => [...prevComments, newComment]);
+}
+};
+
+
+const [comments, setComments] = useState<Commentype[]>([]);
+
   return (
-    <>
-      <BRToolbar />
-      <div className="container mx-auto p-4">
-        <Grid container spacing={3}>
-          {/* User Information Section */}
-          <Grid item xs={12} md={4}>
-            <Paper className="p-4 rounded-lg shadow">
+    <div className="w-full" > 
+      <div className=" p-4 w-full">
+
+          <Grid container>
+            <Paper className="ml-0 p-4 rounded-lg m-4 w-full">
               <div className="flex flex-col items-center">
               <Avatar 
                   alt="Your Username" 
@@ -24,28 +53,30 @@ const defaultAvatarUrl = 'path_to_default_avatar_image.jpg';
                 />
                 <Typography variant="h5">{currentUser?.displayName}</Typography>
                 <Typography variant="body1" color="textSecondary" className="mb-4">{currentUser?.email}</Typography>
-                <Typography variant="body2">[Your Bio]</Typography>
+                <Typography variant="body2"></Typography>
               </div>
             </Paper>
+            
+            <ProfileCommentForm onCommentSubmit={addComment} />
           </Grid>
 
-          {/* Additional Sections */}
-          <Grid item xs={12} md={8}>
-            <Paper className="p-4 rounded-lg shadow">
-              {/* Favorite Photos Section */}
-              <Typography variant="h6" className="mb-2">Favorite Photos</Typography>
-              <Grid container spacing={2}>
-                {/* Insert your favorite photos here */}
-              </Grid>
 
-              {/* Completed Activities Section */}
-              <Typography variant="h6" className="mt-4 mb-2">Completed Activities</Typography>
-              {/* Insert your completed activities here */}
+        <Grid item xs={12}>
+        {comments.map((comment, index) => (
+            <Paper key={comment.id} className={`mb-4 m-4 ${index !== comments.length - 1 ? "mb-6" : ""} rounded-lg shadow`}>
+              <div className="p-2"> {/* Reduced padding */}
+              <Typography variant="body2" color="textSecondary" className="mb-2">
+                  {new Date(comment.timestamp).toLocaleString()}
+                </Typography>
+                <Typography variant="h6" className="mb-2">{comment.title}</Typography>
+                <Typography variant="body1">{comment.body}</Typography>
+              </div>
             </Paper>
-          </Grid>
+          ))}
+
         </Grid>
       </div>
-    </>
+    </div>
   );
 };
 

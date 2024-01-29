@@ -1,79 +1,37 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Card, CardContent,Typography } from '@mui/material'
+import { Box, Button, Card, CardContent,Container,Typography } from '@mui/material'
 import { useAuth } from '../../contexts/AuthContext'
 import { useNavigate } from 'react-router-dom';
 import { useActivityApi } from '../../hooks/useActivity';
+import DBActivity from './DBActivity';
+import useClippy from 'use-clippy';
+import { green } from '@mui/material/colors';
 
 type Props = {}
 
 export default function Dashboard({}: Props) {
-  const { activityData, activityLoading, getActivity } = useActivityApi();
+  const [clipboard, setClipboard] = useClippy();
 
-  const [error, setError] = useState<string>("");
-  const {currentUser} = useAuth();
-  const {logout} = useAuth();
-  const navigate = useNavigate(); 
-
-  useEffect(() => {
-    getActivity();
-  },[])
-
-
-  function handleLogout(): void {
-    setError('');
-    logout();
-    navigate("/login");
-  }
 
 
   return (
-    <div className=''>
-    <Card className='bg-white shadow-lg rounded-lg m-4 p-4'>
-      <CardContent>
-        <Typography component="div" className='ext-gray-800 text-lg mb-4'>
-          <h2 className='text-center mb-4'>Activity for the day</h2>
-          <h2 className='text-center mb-4'>{currentUser?.email}</h2>
-          <h2 className='text-center mb-4'>{!activityLoading && activityData?.activity}</h2>
-          <form>
+    <div style={{ display: 'flex', height: '100vh', width: '100%' }}> {/* Create a flex container */}
 
-            <Button
-              onClick={getActivity}
-              fullWidth
-              variant="contained"
-              sx={{
-                mt: 3, mb: 2, backgroundColor: 	"#a2798f", borderColor: "#ffdae9", color: "white",
-                '&:hover': {
-                  backgroundColor: '#ffdae9', // Replace 'desiredHoverColor' with the color code you want
-                  // borderColor: 'optionalBorderColorForHover', // Optional: if you want to change the border color on hover
-                }
-              }}
-            >
-              Generate
-            </Button>
+      <DBActivity pdfUrl='https://languageadvisor.net/wp-content/uploads/2022/06/Polish-Verbs-Essentials-of-Grammar-PDFDrive-.pdf'/>
+            {/* Large Box Section */}
+            <div style={{ width: '600px', height: '100%', backgroundColor: 'lightgrey' }}> {/* Fixed width for the box */}
+        {/* Content of the box */}
+        <Box className='rounded-3xl ml-2 mt-10 p-10' style={{backgroundColor: 'white'}}>
 
-            <Button
-              onClick={handleLogout}
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{
-                mt: 3, mb: 2, backgroundColor: "	#a2798f", borderColor: "#ffdae9", color: "white",
-                '&:hover': {
-                  backgroundColor: '#ffdae9', // Replace 'desiredHoverColor' with the color code you want
-                  // borderColor: 'optionalBorderColorForHover', // Optional: if you want to change the border color on hover
-                }
-              }}   
-            >
-              Log out
-            </Button>
-          </form>
-          <div 
-          className='text-center mt-2 '>
-              
-          </div>
-        </Typography>
-      </CardContent>
-    </Card>
+
+
+        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-800 leading-tight mt-4 mb-2">
+  {clipboard}
+</h1>
+
+
+      </Box>
+      </div>
   </div>
   )
 }

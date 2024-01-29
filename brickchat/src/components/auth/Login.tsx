@@ -1,15 +1,21 @@
-import React, { useRef, useState } from 'react';
-import { Alert, Button, Card, CardContent, TextField, Typography } from '@mui/material';
-import { useAuth } from '../contexts/AuthContext';
-import { Link } from 'react-router-dom';
+import { Card, CardContent, Typography, Alert, TextField, Button } from '@mui/material'
+import React, { FormEvent, useRef, useState } from 'react'
 
-export default function Signup() {
+import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
+import GoogleButton from 'react-google-button';
+import GoogleSignInButton from './GoogleSignIn';
+
+type Props = {}
+
+export default function Login({}: Props) {
     const emailRef = useRef<HTMLInputElement>(null);
     const passwordRef = useRef<HTMLInputElement>(null);
+    const navigate = useNavigate(); 
 
     const [error, setError] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false);
-    const { signup } = useAuth();
+    const { login, signinwithgoogle } = useAuth();
 
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
@@ -19,6 +25,7 @@ export default function Signup() {
         // Check if refs are not null
         const email = emailRef.current?.value;
         const password = passwordRef.current?.value;
+        
         console.log("email: " + email)
         console.log("password: " + password)
         if (!email && !password) {
@@ -29,23 +36,28 @@ export default function Signup() {
         try {
             setError("");
             setLoading(true);
-            await signup(email, password);
+            await login(email, password);
+            
+            //redirect to dashboard
+            navigate("/")
+
         } catch (error) {
-            setError("Failed to create an account.");
+            setError("Failed to log in.");
             console.error(error); // For debugging purposes
         } finally {
             setLoading(false);
         }
     }
 
-    return (
-        <div className="flex justify-center items-center h-screen">
+  return (
+    <div className="flex justify-center items-center h-screen">
             <Card>
                 <CardContent>
                     <Typography component="div">
-                        <h2 className='text-center mb-4'>Sign Up</h2>
-                        {error && <Alert severity="error">{error}</Alert>}
+                       
+                        <h2 className='text-center mb-4'>Login In</h2>
                         <form onSubmit={handleSubmit}>
+
                             <TextField
                                 inputRef={emailRef}
                                 margin="normal"
@@ -68,6 +80,7 @@ export default function Signup() {
                                 id="password"
                                 autoComplete="current-password"
                             />
+
                             <Button
                                 type="submit"
                                 fullWidth
@@ -75,15 +88,30 @@ export default function Signup() {
                                 sx={{ mt: 3, mb: 2 }}
                                 disabled={loading}
                             >
-                                Submit
+                                Log-in
                             </Button>
+
+                            <div className="flex justify-center mb-4">
+                                <GoogleSignInButton></GoogleSignInButton>
+                            </div>
                         </form>
-                        <div className='text-center mt-2'>
-                            Already have an account? <Link className='underline' to={"/login"}>Login</Link>
+                        <div 
+                        className='text-center mt-2 '>
+                            Need an account? 
+
+                            <Link 
+                                className='ml-2 underline' 
+                                to="/signup">Sign up
+                            </Link>
+                            
+                            <div></div>
+
+
                         </div>
+
                     </Typography>
                 </CardContent>
             </Card>
         </div>
-    )
+  )
 }

@@ -12,6 +12,7 @@
   "dependencies": {
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
+    "@fontsource/roboto": "^5.0.8",
     "@mui/icons-material": "^5.15.6",
     "@mui/material": "^5.15.6",
     "@popperjs/core": "^2.11.8",
@@ -22,7 +23,9 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-google-button": "^0.7.2",
-    "react-router-dom": "^6.21.3"
+    "react-pdf": "^7.7.0",
+    "react-router-dom": "^6.21.3",
+    "use-clippy": "^1.0.9"
   },
   "devDependencies": {
     "@types/react": "^18.2.43",

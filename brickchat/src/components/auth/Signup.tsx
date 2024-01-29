@@ -1,21 +1,15 @@
-import { Card, CardContent, Typography, Alert, TextField, Button } from '@mui/material'
-import React, { FormEvent, useRef, useState } from 'react'
+import React, { useRef, useState } from 'react';
+import { Alert, Button, Card, CardContent, TextField, Typography } from '@mui/material';
+import { useAuth } from '../../contexts/AuthContext';
+import { Link } from 'react-router-dom';
 
-import { Link, Navigate, useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
-import GoogleButton from 'react-google-button';
-import GoogleSignInButton from './GoogleSignIn';
-
-type Props = {}
-
-export default function Login({}: Props) {
+export default function Signup() {
     const emailRef = useRef<HTMLInputElement>(null);
     const passwordRef = useRef<HTMLInputElement>(null);
-    const navigate = useNavigate(); 
 
     const [error, setError] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false);
-    const { login, signinwithgoogle } = useAuth();
+    const { signup } = useAuth();
 
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
@@ -25,7 +19,6 @@ export default function Login({}: Props) {
         // Check if refs are not null
         const email = emailRef.current?.value;
         const password = passwordRef.current?.value;
-        
         console.log("email: " + email)
         console.log("password: " + password)
         if (!email && !password) {
@@ -36,28 +29,23 @@ export default function Login({}: Props) {
         try {
             setError("");
             setLoading(true);
-            await login(email, password);
-            
-            //redirect to dashboard
-            navigate("/")
-
+            await signup(email, password);
         } catch (error) {
-            setError("Failed to log in.");
+            setError("Failed to create an account.");
             console.error(error); // For debugging purposes
         } finally {
             setLoading(false);
         }
     }
 
-  return (
-    <div className="flex justify-center items-center h-screen">
+    return (
+        <div className="flex justify-center items-center h-screen">
             <Card>
                 <CardContent>
                     <Typography component="div">
-                        <GoogleSignInButton></GoogleSignInButton>
-                        <h2 className='text-center mb-4'>Login In</h2>
+                        <h2 className='text-center mb-4'>Sign Up</h2>
+                        {error && <Alert severity="error">{error}</Alert>}
                         <form onSubmit={handleSubmit}>
-
                             <TextField
                                 inputRef={emailRef}
                                 margin="normal"
@@ -87,22 +75,15 @@ export default function Login({}: Props) {
                                 sx={{ mt: 3, mb: 2 }}
                                 disabled={loading}
                             >
-                                Log-in
+                                Submit
                             </Button>
                         </form>
-                        <div 
-                        className='text-center mt-2 '>
-                            Need an account? 
-
-                            <Link 
-                                className='ml-2 underline' 
-                                to="/signup">Sign up
-                            </Link>
-
+                        <div className='text-center mt-2'>
+                            Already have an account? <Link className='underline' to={"/login"}>Login</Link>
                         </div>
                     </Typography>
                 </CardContent>
             </Card>
         </div>
-  )
+    )
 }

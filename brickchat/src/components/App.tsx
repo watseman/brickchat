@@ -5,25 +5,26 @@ import Root from "../Routes/private/Root"
 import LoginRoute from "../Routes/private/public/LoginRoute"
 import SignupRoute from "../Routes/private/public/SignupRoute"
 import Profile from "./profile/Profile"
+import ProfileRoute from "../Routes/private/ProfileRoute"
 
 
 function App() {
 
   return (
 
-    <Container>
+    <>
       <Router>
       <AuthProvider>
        <Routes>
         <Route path="/" element={<Root />}></Route>
         <Route path="/signup" element={<SignupRoute />}></Route>
         <Route path="/login" element={<LoginRoute />}></Route>
-        <Route path="/profile" element={<Profile />}></Route>
+        <Route path="/profile" element={<ProfileRoute />}></Route>
        </Routes>
       </AuthProvider>
       </Router>
 
-    </Container>
+    </>
 
 
   )

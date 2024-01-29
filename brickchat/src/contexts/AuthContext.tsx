@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { auth } from '../firebase/Firebase';
 import { User, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { useNavigate } from 'react-router-dom';
 
 type AuthContextType = {
     currentUser: User | null;
@@ -31,6 +32,7 @@ export function useAuth() {
 
 
 export function AuthProvider({ children }: AuthProviderProps) {
+  const navigate = useNavigate();
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -39,7 +41,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }
 
   async function signinwithgoogle(){
-    signInWithPopup(auth, provider)
+    try {
+      await signInWithPopup(auth, provider);
+      // Redirect to dashboard or desired route after successful sign-in
+      navigate("/profile"); // Replace '/dashboard' with your desired route
+    } catch (error) {
+      // Handle errors here, such as displaying a message to the user
+      console.error("Error signing in with Google:", error);
+    }
 
   }
 
